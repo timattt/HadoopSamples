@@ -11,6 +11,7 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.StringTokenizer;
 
 public class App {
@@ -18,13 +19,39 @@ public class App {
             extends Mapper<Object, Text, Text, IntWritable> {
 
         private final static IntWritable one = new IntWritable(1);
+        private final static IntWritable zero = new IntWritable(0);
+        private final static String[] useless = {",", ".", "\"", "'", ":", ";"};
         private final Text word = new Text();
 
         public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
             StringTokenizer itr = new StringTokenizer(value.toString());
             while (itr.hasMoreTokens()) {
-                word.set(itr.nextToken());
-                context.write(word, one);
+                String token = itr.nextToken();
+
+                for (String item : useless) {
+                    token = token.replace(item, "");
+                }
+
+                if (token.length() >= 6 && token.length() <= 9) {
+                    boolean skip = false;
+                    for (int i = 1; i < token.length(); i++) {
+                        if (!Character.isLowerCase(token.charAt(i))) {
+                            skip = true;
+                        }
+                    }
+
+                    if (skip) {
+                        continue;
+                    }
+
+                    word.set(token.toLowerCase());
+                    if (Character.isUpperCase(token.charAt(0))) {
+                        context.write(word, one);
+                    }
+                    if (Character.isLowerCase(token.charAt(0))) {
+                        context.write(word, zero);
+                    }
+                }
             }
         }
     }
@@ -38,6 +65,9 @@ public class App {
         ) throws IOException, InterruptedException {
             int sum = 0;
             for (IntWritable val : values) {
+                if (val.get() == 0) {
+                    return;
+                }
                 sum += val.get();
             }
             result.set(sum);
