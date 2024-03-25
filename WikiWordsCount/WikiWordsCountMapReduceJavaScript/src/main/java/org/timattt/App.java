@@ -1,86 +1,55 @@
 package org.timattt;
 
+import lombok.SneakyThrows;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapred.jobcontrol.JobControl;
 import org.apache.hadoop.mapreduce.Job;
-import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.mapreduce.Reducer;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.jobcontrol.ControlledJob;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-
-import java.io.IOException;
-import java.util.StringTokenizer;
+import org.timattt.jobs.Jobs;
 
 public class App {
-    public static class TokenizerMapper extends Mapper<Object, Text, Text, IntWritable> {
-
-        private final static IntWritable one = new IntWritable(1);
-        private final static IntWritable zero = new IntWritable(0);
-        private final static String[] useless = {",", ".", "\"", "'", ":", ";"};
-        private final Text word = new Text();
-
-        public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-            StringTokenizer itr = new StringTokenizer(value.toString());
-            while (itr.hasMoreTokens()) {
-                String token = itr.nextToken();
-
-                for (String item : useless) {
-                    token = token.replace(item, "");
-                }
-
-                if (token.length() >= 6 && token.length() <= 9) {
-                    boolean skip = false;
-                    for (int i = 1; i < token.length(); i++) {
-                        if (!Character.isLowerCase(token.charAt(i))) {
-                            skip = true;
-                        }
-                    }
-
-                    if (skip) {
-                        continue;
-                    }
-
-                    word.set(token.toLowerCase());
-                    if (Character.isUpperCase(token.charAt(0))) {
-                        context.write(word, one);
-                    }
-                    if (Character.isLowerCase(token.charAt(0))) {
-                        context.write(word, zero);
-                    }
-                }
-            }
-        }
+    public static void main(String[] args) {
+        runJobs(args[0], args[1]);
     }
 
-    public static class IntSumReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
-        private final IntWritable result = new IntWritable();
-
-        public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
-            int sum = 0;
-            for (IntWritable val : values) {
-                if (val.get() == 0) {
-                    return;
-                }
-                sum += val.get();
-            }
-            result.set(sum);
-            context.write(key, result);
-        }
-    }
-
-    public static void main(String[] args) throws Exception {
+    @SneakyThrows
+    private static void runJobs(String inputPath, String outputPath) {
         Configuration conf = new Configuration();
-        Job job = Job.getInstance(conf, "word count");
-        job.setJarByClass(App.class);
-        job.setMapperClass(TokenizerMapper.class);
-        job.setCombinerClass(IntSumReducer.class);
-        job.setReducerClass(IntSumReducer.class);
-        job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(IntWritable.class);
-        FileInputFormat.addInputPath(job, new Path(args[0]));
-        FileOutputFormat.setOutputPath(job, new Path(args[1]));
-        System.exit(job.waitForCompletion(true) ? 0 : 1);
+
+        String wordCountJobInput = inputPath;
+        String wordCountJobOutput = outputPath + "/WordCountResult";
+
+        String resortJobInput = wordCountJobOutput + "/part*";
+        String resortJobOutput = outputPath + "/ResortJobResult";
+
+        Job wordCountJob = Jobs.createWordCountJob(conf);
+        Job resortJob = Jobs.createResortJob(conf);
+
+        FileInputFormat.addInputPath(wordCountJob, new Path(wordCountJobInput));
+        FileOutputFormat.setOutputPath(wordCountJob, new Path(wordCountJobOutput));
+
+        FileInputFormat.addInputPath(resortJob, new Path(resortJobInput));
+        FileOutputFormat.setOutputPath(resortJob, new Path(resortJobOutput));
+
+        ControlledJob controlledWordCountJob = new ControlledJob(wordCountJob.getConfiguration());
+        ControlledJob controlledResortJob = new ControlledJob(resortJob.getConfiguration());
+
+        controlledResortJob.addDependingJob(controlledWordCountJob);
+
+        JobControl jobControl = new JobControl("WikiJobs");
+        jobControl.addJob(controlledWordCountJob);
+        jobControl.addJob(controlledResortJob);
+
+        Thread jobControlThread = new Thread(jobControl);
+        jobControlThread.start();
+
+        while (!jobControl.allFinished()) {
+            Thread.sleep(1000);
+        }
+
+        jobControl.stop();
     }
 }
