@@ -56,6 +56,9 @@ public class App
         }
 
         for (String line : dest) {
+            if (!line.contains("\t")) {
+                continue;
+            }
             String[] divs = line.split("\t");
             int count = - Integer.parseInt(divs[0]);
             String word = divs[1];
