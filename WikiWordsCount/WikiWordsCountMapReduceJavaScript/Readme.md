@@ -8,3 +8,4 @@
 
 * Посмотреть, с чем имеем дело командой ```hadoop fs -cat /data/wiki/en_articles/articles```
 * Удалить папку с результатом ```hadoop fs -rm -r -f /user/hobod2024s052/output```
+* Посмотреть логи джобы ```yarn logs -applicationId application_1704733330035_3247```
