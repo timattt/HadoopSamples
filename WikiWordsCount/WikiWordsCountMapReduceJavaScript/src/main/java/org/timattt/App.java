@@ -22,7 +22,7 @@ public class App {
         String wordCountJobInput = inputPath;
         String wordCountJobOutput = outputPath + "/WordCountResult";
 
-        String resortJobInput = wordCountJobOutput + "/part*";
+        String resortJobInput = wordCountJobOutput;
         String resortJobOutput = outputPath + "/ResortJobResult";
 
         Job wordCountJob = Jobs.createWordCountJob(conf);
