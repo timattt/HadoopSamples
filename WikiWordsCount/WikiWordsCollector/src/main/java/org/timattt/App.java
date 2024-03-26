@@ -59,7 +59,7 @@ public class App
         for (String line : dest) {
             try {
                 String[] divs = line.split("\t");
-                int count = -Integer.parseInt(divs[0]);
+                int count = Integer.parseInt(divs[0]);
                 String word = divs[1];
                 pairs.add(new Pair(count, word));
             } catch (Exception e) {
