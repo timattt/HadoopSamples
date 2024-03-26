@@ -11,7 +11,6 @@ public class ResortReducer extends Reducer<IntWritable, Text, IntWritable, Text>
     public void reduce(IntWritable key, Iterable<Text> values, Context context) throws IOException, InterruptedException {
         for (Text text : values) {
             context.write(key, text);
-            return;
         }
     }
 }
