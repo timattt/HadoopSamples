@@ -11,7 +11,6 @@ public class ResortMapper extends Mapper<Object, Text, IntWritable, Text> {
     private final Text word = new Text();
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-        System.out.println(value);
         String[] divs = value.toString().split("\t");
 
         String wordString = divs[0];
