@@ -83,7 +83,7 @@ public class App
 
         @Override
         public int compareTo(Pair o) {
-            return count - o.count;
+            return -count + o.count;
         }
     }
 }
