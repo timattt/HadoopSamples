@@ -16,7 +16,7 @@ public class ResortMapper extends Mapper<Object, Text, IntWritable, Text> {
         String wordString = divs[0];
         int count = Integer.parseInt(divs[1]);
 
-        number.set(count);
+        number.set(-count);
         word.set(wordString);
 
         context.write(number, word);
