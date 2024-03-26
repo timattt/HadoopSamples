@@ -1,5 +1,6 @@
 package org.timattt;
 
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
@@ -19,8 +20,6 @@ public class App
         parse();
     }
 
-    private static final int linesToTake = 10;
-
     @SneakyThrows
     private static void processFile(List<String> dest, String path) {
         Runtime rt = Runtime.getRuntime();
@@ -31,7 +30,7 @@ public class App
 
         Scanner scanner = new Scanner(proc.getInputStream());
 
-        for (int i = 0; i < linesToTake && scanner.hasNext(); i++) {
+        while (scanner.hasNext()) {
             String line = scanner.nextLine();
             dest.add(line);
         }
@@ -55,14 +54,36 @@ public class App
             processFile(dest,  getName(i));
         }
 
+        Set<Pair> pairs = new TreeSet<Pair>();
+
         for (String line : dest) {
-            if (!line.contains("\t")) {
-                continue;
+            try {
+                String[] divs = line.split("\t");
+                int count = -Integer.parseInt(divs[0]);
+                String word = divs[1];
+                pairs.add(new Pair(count, word));
+            } catch (Exception e) {
             }
-            String[] divs = line.split("\t");
-            int count = - Integer.parseInt(divs[0]);
-            String word = divs[1];
-            System.out.println(count + " " + word);
+        }
+
+        int total = 0;
+        for (Pair p : pairs) {
+            System.out.println(p.word + "\t" + p.count);
+            total++;
+            if (total == 10) {
+                return;
+            }
+        }
+    }
+
+    @AllArgsConstructor
+    private static class Pair implements Comparable<Pair> {
+        int count;
+        String word;
+
+        @Override
+        public int compareTo(Pair o) {
+            return count - o.count;
         }
     }
 }
