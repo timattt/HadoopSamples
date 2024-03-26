@@ -50,7 +50,7 @@ public class App
 
     @SneakyThrows
     private static void parse() {
-        LinkedList<String> dest = new LinkedList<>();
+        LinkedList<String> dest = new LinkedList<String>();
         for (int i = 0; i < 16; i++) {
             processFile(dest,  getName(i));
         }
