@@ -21,12 +21,16 @@ public class App
     }
 
     @SneakyThrows
-    private static void processFile(List<String> dest, String path) {
+    private static boolean processFile(List<String> dest, String path) {
         Runtime rt = Runtime.getRuntime();
         String[] commands = {"hadoop", "fs", "-tail", path};
         Process proc = rt.exec(commands);
 
         int status = proc.waitFor();
+
+        if (status != 0) {
+            return true;
+        }
 
         Scanner scanner = new Scanner(proc.getInputStream());
 
@@ -36,6 +40,8 @@ public class App
         }
 
         scanner.close();
+
+        return false;
     }
 
     private static String getName(int i) {
@@ -50,8 +56,10 @@ public class App
     @SneakyThrows
     private static void parse() {
         LinkedList<String> dest = new LinkedList<String>();
-        for (int i = 0; i < 16; i++) {
-            processFile(dest,  getName(i));
+        for (int i = 0; i < 10000; i++) {
+            if (processFile(dest,  getName(i))) {
+                break;
+            }
         }
 
         Set<Pair> pairs = new TreeSet<Pair>();
