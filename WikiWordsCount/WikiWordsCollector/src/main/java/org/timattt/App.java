@@ -3,11 +3,6 @@ package org.timattt;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -16,8 +11,8 @@ import java.util.*;
  */
 public class App 
 {
-    public static void main( String[] args ) {
-        parse();
+    public static void main(String[] args) {
+        parse(args[0], Integer.parseInt(args[1]));
     }
 
     @SneakyThrows
@@ -44,8 +39,8 @@ public class App
         return false;
     }
 
-    private static String getName(int i) {
-        String result = "/user/hobod2024s052/output/ResortJobResult/part-r-000";
+    private static String getName(String dir, int i) {
+        String result = dir + "/ResortJobResult/part-r-000";
         if (i < 10) {
             result += "0";
         }
@@ -54,10 +49,10 @@ public class App
     }
 
     @SneakyThrows
-    private static void parse() {
+    private static void parse(String dir, int maxOut) {
         LinkedList<String> dest = new LinkedList<String>();
-        for (int i = 0; i < 10000; i++) {
-            if (processFile(dest,  getName(i))) {
+        for (int i = 0; true; i++) {
+            if (processFile(dest,  getName(dir, i))) {
                 break;
             }
         }
@@ -70,7 +65,7 @@ public class App
                 int count = Integer.parseInt(divs[0]);
                 String word = divs[1];
                 pairs.add(new Pair(count, word));
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         }
 
@@ -78,7 +73,7 @@ public class App
         for (Pair p : pairs) {
             System.out.println(p.word + "\t" + p.count);
             total++;
-            if (total == 10) {
+            if (total == maxOut) {
                 return;
             }
         }
