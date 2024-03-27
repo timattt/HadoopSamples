@@ -3,7 +3,7 @@
 INPUT_PATH="/data/wiki/en_articles"
 OUTPUT_PATH="/user/hobod2024s052/output"
 OUT_WORDS_COUNT=10
-OUT_STREAM=/dev/stdout
+OUT_STREAM=/dev/null
 
 cd WikiWordsCountMapReduceJavaScript
 mvn clean package > $OUT_STREAM
