@@ -40,9 +40,12 @@ public class ThreadDayMapper extends Mapper<Object, Text, Text, IntWritable> {
     }
 
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
-        String line = value.toString();
-        String into = parse(line);
-        word.set(into);
-        context.write(word, one);
+        try {
+            String line = value.toString();
+            String into = parse(line);
+            word.set(into);
+            context.write(word, one);
+        } catch (Exception e) {
+        }
     }
 }
