@@ -37,6 +37,8 @@ public class Jobs {
         job.setCombinerClass(OnlyThreadReducer.class);
         job.setReducerClass(OnlyThreadReducer.class);
 
+        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputValueClass(IntWritable.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(DoubleWritable.class);
         return job;
