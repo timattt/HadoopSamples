@@ -38,7 +38,7 @@ public class Jobs {
         job.setReducerClass(OnlyThreadReducer.class);
 
         job.setOutputKeyClass(Text.class);
-        job.setOutputValueClass(DoubleWritable.class);
+        job.setOutputValueClass(IntWritable.class);
         return job;
     }
 
