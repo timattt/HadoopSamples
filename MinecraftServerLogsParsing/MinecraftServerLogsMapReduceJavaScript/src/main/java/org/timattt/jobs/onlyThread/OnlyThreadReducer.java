@@ -7,6 +7,7 @@ import org.apache.hadoop.mapreduce.Reducer;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     private final Text word = new Text();
@@ -19,7 +20,7 @@ public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, IntWrita
             result = result.add(BigDecimal.valueOf(day.get()));
             count++;
         }
-        result = result.divide(BigDecimal.valueOf(count));
+        result = result.divide(BigDecimal.valueOf(count), RoundingMode.HALF_UP);
         doubleWritable.set((int) result.doubleValue());
         context.write(key, doubleWritable);
     }
