@@ -10,7 +10,7 @@ yarn jar target/MinecraftServerLogsJob-0.0.1-SNAPSHOT-jar-with-dependencies.jar 
 cd ..
 
 let count=0
-for f in "$OUTPUT_PATH"/*
+for f in "$OUTPUT_PATH/OnlyThreadResult"/*
 do
     echo $(basename $f)
     let count=count+1
