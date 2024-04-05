@@ -2,7 +2,7 @@
 
 INPUT_PATH="/data/minecraft-server-logs"
 OUTPUT_PATH="/user/hobod2024s052/output"
-OUT_STREAM=/dev/null
+OUT_STREAM=/dev/stdout
 
 cd MinecraftServerLogsMapReduceJavaScript
 mvn clean package > $OUT_STREAM
