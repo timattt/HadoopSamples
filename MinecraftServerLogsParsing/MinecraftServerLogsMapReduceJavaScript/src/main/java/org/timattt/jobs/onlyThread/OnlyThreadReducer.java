@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
+public class OnlyThreadReducer extends Reducer<Text, DoubleWritable, Text, DoubleWritable> {
     private final Text word = new Text();
     private final DoubleWritable doubleWritable = new DoubleWritable();
 
