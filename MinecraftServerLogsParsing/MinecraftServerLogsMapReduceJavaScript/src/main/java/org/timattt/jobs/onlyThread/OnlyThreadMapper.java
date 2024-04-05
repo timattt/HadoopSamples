@@ -6,7 +6,7 @@ import org.apache.hadoop.mapreduce.Mapper;
 
 import java.io.IOException;
 
-public class OnlyThreadMapper extends Mapper<Text, IntWritable, Text, IntWritable> {
+public class OnlyThreadMapper extends Mapper<Object, Text, Text, IntWritable> {
     private final Text word = new Text();
     private final IntWritable intWritable = new IntWritable();
 
