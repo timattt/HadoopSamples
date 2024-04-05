@@ -9,9 +9,9 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
+public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, DoubleWritable> {
     private final Text word = new Text();
-    private final IntWritable doubleWritable = new IntWritable();
+    private final DoubleWritable doubleWritable = new DoubleWritable();
 
     public void reduce(Text key, Iterable<IntWritable> values, Context context) throws IOException, InterruptedException {
         BigDecimal result = new BigDecimal(0);
@@ -21,7 +21,7 @@ public class OnlyThreadReducer extends Reducer<Text, IntWritable, Text, IntWrita
             count++;
         }
         result = result.divide(BigDecimal.valueOf(count), RoundingMode.HALF_UP);
-        doubleWritable.set((int) result.doubleValue());
+        doubleWritable.set(result.doubleValue());
         context.write(key, doubleWritable);
     }
 }
