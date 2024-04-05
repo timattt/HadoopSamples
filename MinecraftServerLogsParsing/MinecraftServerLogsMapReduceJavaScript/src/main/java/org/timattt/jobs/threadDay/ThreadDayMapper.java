@@ -39,6 +39,7 @@ public class ThreadDayMapper extends Mapper<Object, Text, Text, IntWritable> {
         return threadName + ":" + date;
     }
 
+    @Override
     public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         try {
             String line = value.toString();

@@ -8,9 +8,14 @@ import java.io.IOException;
 
 public class OnlyThreadMapper extends Mapper<Text, IntWritable, Text, IntWritable> {
     private final Text word = new Text();
+    private final IntWritable intWritable = new IntWritable();
 
-    public void map(Text key, IntWritable value, Context context) throws IOException, InterruptedException {
+    public void map(Object key, Text value, Context context) throws IOException, InterruptedException {
         String thread = key.toString().split(":")[0];
-        context.write(word, value);
+        int count = Integer.parseInt(key.toString().split(":")[1]);
+
+        word.set(thread);
+        intWritable.set(count);
+        context.write(word, intWritable);
     }
 }
