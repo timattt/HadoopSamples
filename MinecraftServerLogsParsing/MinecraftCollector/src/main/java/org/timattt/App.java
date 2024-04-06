@@ -8,7 +8,7 @@ import java.util.*;
 public class App 
 {
     public static void main(String[] args) {
-        parse(args[0], Integer.parseInt(args[1]));
+        parse(args[0]);
     }
 
     @SneakyThrows
@@ -45,7 +45,7 @@ public class App
     }
 
     @SneakyThrows
-    private static void parse(String dir, int maxOut) {
+    private static void parse(String dir) {
         LinkedList<String> dest = new LinkedList<String>();
         for (int i = 0; true; i++) {
             if (processFile(dest,  getName(dir, i))) {
