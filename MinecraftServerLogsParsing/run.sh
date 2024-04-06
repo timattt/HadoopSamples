@@ -13,5 +13,5 @@ hadoop fs -ls /user/hobod2024s052/output/OnlyThreadResult
 
 cd MinecraftCollector
 mvn clean package > $$OUT_STREAM
-java -jar target/MinecraftCollector-1.0-SNAPSHOT-jar-with-dependencies.jar
+java -jar target/MinecraftCollector-1.0-SNAPSHOT-jar-with-dependencies.jar $OUTPUT_PATH
 cd ..
