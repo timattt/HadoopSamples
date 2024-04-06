@@ -53,9 +53,22 @@ public class App
             }
         }
 
+        TreeMap<String, Double> data = new TreeMap<String, Double>();
+
         for (String line : dest) {
-			System.out.println(line);
-		}
+            String[] divs = line.split("\t");
+            String thread = divs[0];
+            double value = Double.parseDouble(divs[1]);
+            if (data.containsKey(thread)) {
+                data.put(thread, (data.get(thread) + value) / 2);
+            } else {
+                data.put(thread, value);
+            }
+        }
+
+        for (String thread : data.keySet()) {
+            System.out.println(thread + "\t" + data.get(thread));
+        }
     }
 
     @AllArgsConstructor
